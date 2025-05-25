@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <pre id="all">
+        adaline()
+        boosting()
+        dimRed()
+        elbowKmeans()
+        intro (numpy,pandas,scikit etc )
+        logReg()
+        perceptron()
+        perceptronGreDes()
+        prolog8()
+        prologTic()
+        prologWater()
+        randomForest()
+        svm()
+    </pre>
+    <pre id="boosting">
+# AdaBoost Classification
+import pandas as pd
+
+df = pd.read_csv("pimaindiansdiabetes.csv")
+df
+
+
+df.shape
+
+
+
+X = df.iloc[:,0:8]
+y = df.iloc[:,8]
+
+
+
+from sklearn import model_selection
+from sklearn.ensemble import AdaBoostClassifier
+kfold = model_selection.KFold(n_splits=10, random_state=42)
+num_trees = 30
+model = AdaBoostClassifier(n_estimators=num_trees, random_state=42)
+results = model_selection.cross_val_score(model, X, y, cv=kfold)
+print(results.mean())
+
+
+
+
+
+
+
+# Stochastic Gradient Boosting
+import pandas as pd
+
+
+df = pd.read_csv("pimaindiansdiabetes.csv")
+df
+
+
+X = df.iloc[:,0:8]
+y = df.iloc[:,8]
+
+
+from sklearn import model_selection
+from sklearn.ensemble import GradientBoostingClassifier
+kfold = model_selection.KFold(n_splits=10, random_state=42)
+num_trees = 30
+model = GradientBoostingClassifier(n_estimators=num_trees, random_state=42)
+results = model_selection.cross_val_score(model, X, y, cv=kfold)
+print(results.mean())
+
+
+
+
+
+#-----------------------3.	Voting Ensemble Algorithm---------------------------------------
+a.	Given the pimaindiansdiabetes.csv dataset, do the following:
+b.	Load the dataset and display the same.
+
+
+import pandas as pd
+
+df = pd.read_csv("pimaindiansdiabetes.csv")
+df
+
+
+c.	Create logistic regression, decision tree and SVC models. Apply Voting ensemble algorithm to the above 3 models.
+
+from sklearn import model_selection
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.ensemble import VotingClassifier
+
+# create the sub models
+estimators = []
+logmodel = LogisticRegression()
+estimators.append(('logistic', logmodel))
+
+DTmodel = DecisionTreeClassifier()
+estimators.append(('cart', DTmodel))
+
+SVCmodel = SVC()
+estimators.append(('svm', SVCmodel))
+
+# create the ensemble model
+ensemble = VotingClassifier(estimators)
+ensemble
+
+
+import warnings
+warnings.filterwarnings("ignore")
+
+kfold = model_selection.KFold(n_splits=10,)
+results = model_selection.cross_val_score(ensemble, X, y, cV=kfold)
+print(results.mean())
+
+
+
+
+        
+    </pre>
+    <pre id="dimRed">
+Feature selection
+
+import pandas as pd
+
+import numpy as np
+
+from sklearn. feature_selection import SelectKBest
+from sklearn.feature selection import chi2
+
+data =pd.read_csv('Mobile_Data.csv')
+data.head(5)
+
+
+#AlL columns except price range
+X=data.iloc[:,0:20]
+
+#only price range column
+y=data.iloc[:,-1]
+
+
+
+4.	Apply Chi-Square Test filter method to extract top 10 best features. 
+Display the features and their scores after the feature selection method is applied. Write down which features are selected.
+
+solution : 
+
+#apply selectKBest to extract top 10 best features
+bestfeatures=SelectKBest(score_func=chi2,k=10)
+model = bestfeatures.fit(X,y)
+
+dfscores = pd. DataFrame(model.scores_)
+dfcolumns = pd.DataFrame(X.columns)
+
+X = pd.concat([d for d in [dfcolumns, dfscores]], axis=1)
+X
+
+
+Feature Scaling -Normalization and Standardization
+
+
+solution :
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+cols = ['loan_amount', 'interest_rate','installment' ]
+data = pd.read_csv('Loan_Data.csv', usecols = cols)
+
+
+
+
+4.	Apply Standardization. Calculate mean and standard deviation. Interpret the results
+
+
+#Applying Standardization
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler()
+std_data_scaled = scaler.fit_transform(data)
+std data scaled
+
+
+print(std_data_scaled.mean(axis=0))
+print(std_data_scaled.std(axis=0))
+
+
+5.	Apply Normalization. Calculate mean and standard deviation. Interpret the results.
+
+
+Solution:
+#Applying Normalization
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+norm_data_scaled = scaler.fit_transform(data)
+
+norm_data_scaled
+
+print(norm_data_scaled.mean(axis=0))
+print(norm_data_scaled.std(axis=0))0
+
+
+6.	Interpret the results of Standardization and Normalization.
+
+
+# importing the libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#importing the dataset
+dataset = pd.read_csv('Wine.csv')
+X =dataset.iloc[:,0:13].values
+X
+
+
+y = dataset.iloc[:, 13].values
+y
+
+#splitting the dataset into the training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42)
+
+#feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X test = sc.transform(X_test)
+
+#Applying LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+lda = LDA(n_components = 2)
+X train = lda.fit_transform(X_train, y_train)
+X test = lda.transform(X_test)
+
+# Fitting Logistic Regression to the Training Set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train, y_train)
+
+3.	Display confusion matrix and accuracy score and interpret the results.
+solution:
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+#Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+#making the Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+print('Accuracy'+" "+ str(accuracy_score(y_test, y_pred)))
+
+
+Principal Component Analysis 
+1.	Given the dataset Wine.csv, perform  Principal Component Analysis(PCA).
+    # importing the libraries
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+#importing the dataset
+dataset = pd.read_csv('Wine.csv')
+X =dataset.iloc[:,0:13].values
+X
+
+
+
+2.	Use logistic regression to predict the results on X_test. .
+
+solution 
+#Applying PCA
+from sklearn.decomposition import PCA
+pca = PCA(n_components = 2)
+X_train = pca.fit_transform(X_train)
+X_test = pca.transform(X_test)
+
+# Fitting Logistic Regression to the Training Set
+from sklearn.linear_model import LogisticRegression
+classifier = LogisticRegression(random_state = 0)
+classifier.fit(X_train, y_train)
+
+3.	Display confusion matrix and accuracy score and interpret the results.
+
+solution:
+
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+
+#Predicting the Test set results
+y_pred = classifier.predict(X_test)
+
+#making the Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+print(cm)
+print('Accuracy'+" "+ str(accuracy_score(y_test, y_pred)))
+
+
+
+    </pre>
+    <pre id="elbowKmeans">
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+sns.set()
+from sklearn.cluster import KMeans
+
+
+
+data = pd.read_csv("India StatesUTs.csv")
+
+
+data
+
+
+#display the no of rows and columns
+data.shape
+
+
+x = data.iloc[:,1:3]
+x
+
+
+
+kmeansmodel = KMeans(n_clusters=5)
+
+
+kmeansmodel.fit(x)
+
+
+identified_clusters = kmeansmodel.fit_predict(x)
+identified_clusters
+
+
+data_with_clusters = data.copy()
+data_with_clusters['Cluster'] = identified_clusters
+data_with_clusters
+
+
+plt.scatter(data_with_clusters['Longitude'],
+           data_with_clusters['Latitude'],
+           c=data_with_clusters['Cluster'],
+           cmap = 'brg',s = 200)
+plt.xlim(50,100)
+plt.ylim(0,50)
+plt.show()
+
+
+
+
+
+
+wcss = []
+
+for i in range(1,7):
+    kmeans = KMeans(i)
+    kmeans.fit(x)
+    wcss_iter = kmeans.inertia_
+    wcss.append(wcss_iter)
+
+
+
+
+wcss
+
+
+
+
+
+# the elbow method 
+number_cluster = range(1,7)
+plt.plot(number_cluster,wcss)
+plt.title('The Elbow Method')
+plt.xlabel('Number of Clusters')
+plt.ylabel('within-cluster Sum of Squares')
+
+
+    </pre>
+    <pre id="intro">
+########  DataTypes, If-else and Functions
+
+
+
+# 1. What is 2 to the power of 10?
+print("1:", 2**10)  # 1024
+
+# 2. Declare n1=10, n2=20, n3=30 and display ‘sum of 10 and 20 is 30’ using format()
+n1, n2, n3 = 10, 20, 30
+print("2: sum of {} and {} is {}".format(n1, n2, n3))
+
+# 3. Split the string into a list
+str1 = "SIESCOMS Sector-5 Plot-1E Nerul 200706"
+print("3:", str1.split())
+
+# 4. Display 'Nerul' from the split string
+print("4:", str1.split()[3])
+
+# 5. Split string and create a list of colleges, display 'SIESCOMS'
+str3 = "SI- ESCOMS&VESIT&MET&STERLING&BVIT"
+colleges = str3.split('&')
+print("5:", "SIESCOMS")  # Assuming 'SIESCOMS' should be printed directly
+
+# 6. Format planet and diameter
+planet = "Earth"
+diameter = 12742
+print("6: The diameter of {} is {} kilometers.".format(planet, diameter))
+
+# 7. Extract the word “hello” from a nested dictionary
+d = {'key1': [1, 2, 3, {'key2': ['this', 'is', ['a', 'tricky', 'hello']]}]}
+print("7:", d['key1'][3]['key2'][2][2])
+
+# 8. Grab the domain from email
+def get_domain(email):
+    return email.split('@')[-1]
+
+print("8:", get_domain("xyz@sies.edu.in"))
+
+# 9. Count number of times the word “dog” occurs in a string
+def count_dogs(text):
+    return text.lower().split().count("dog")
+
+essay = """The dog is a pet animal. A dog has sharp teeth so that it can eat flesh very easily. A dog has four legs, two ears, two eyes, a tail, a mouth, and a nose. A dog is a very clever animal and is very useful in catching thieves. A dog runs very fast, barks loudly and attacks the strangers. A dog saves the life of the master from danger. Dog are a very faithful animal. Usually, the dog eats fish, meat, milk, rice, bread, etc. Dogs are sometimes called canines. The lifespan of a dog is very small however it can live around 12-15 years long which depend on their size such as smaller dogs lives a longer life. A female dog gives birth to a baby and feed milk that’s why dogs under the mammal category. The dog baby is called a puppy or pup and dog home is called kennel."""
+print("9: Number of times 'dog' occurs:", count_dogs(essay))
+
+# 10. Speeding ticket function with birthday consideration
+def speeding_ticket(speed, is_birthday):
+    allowance = 5 if is_birthday else 0
+    if speed <= 60 + allowance:
+        return "No Ticket"
+    elif speed <= 80 + allowance:
+        return "Small Ticket"
+    else:
+        return "Big Ticket"
+
+print("10:", speeding_ticket(70, False))  # Small Ticket
+print("10:", speeding_ticket(81, True))   # Small Ticket
+
+
+
+
+
+
+
+######## Numpy 
+
+
+# Import NumPy
+import numpy as np
+
+# 1. Create an array of 10 zeros
+zeros_array = np.zeros(10)
+print("1:", zeros_array)
+
+# 2. Create an array of 10 ones
+ones_array = np.ones(10)
+print("2:", ones_array)
+
+# 3. Create an array of 10 fives
+fives_array = np.full(10, 5)
+print("3:", fives_array)
+
+# 4. Create an array of integers from 10 to 50
+arr_10_to_50 = np.arange(10, 51)
+print("4:", arr_10_to_50)
+
+# 5. Create an array of even integers from 10 to 50
+even_arr = np.arange(10, 51, 2)
+print("5:", even_arr)
+
+# 6. Create a 3x3 matrix with values from 0 to 8
+matrix_3x3 = np.arange(9).reshape(3, 3)
+print("6:\n", matrix_3x3)
+
+# 7. Create a 3x3 identity matrix
+identity_matrix = np.eye(3)
+print("7:\n", identity_matrix)
+
+# 8. Generate a random number between 0 and 1
+rand_num = np.random.rand()
+print("8:", rand_num)
+
+# 9. Generate an array of 25 random numbers from a standard normal distribution
+rand_array_25 = np.random.randn(25)
+print("9:", rand_array_25)
+
+# 10. Create an array of 20 linearly spaced points between 0 and 1
+linspace_20 = np.linspace(0, 1, 20)
+print("10:", linspace_20)
+
+# 11. Create the given 5x5 matrix
+mat = np.arange(1, 26).reshape(5, 5)
+print("11:\n", mat)
+
+# 12. Get the sum of all values in mat
+sum_mat = mat.sum()
+print("12: Sum of all values:", sum_mat)
+
+# 13. Get the standard deviation of the values in mat
+std_mat = mat.std()
+print("13: Standard deviation:", std_mat)
+
+# 14. Get the sum of all the columns in mat
+col_sum = mat.sum(axis=0)
+print("14: Column-wise sum:", col_sum)
+
+
+
+
+
+
+########## pandas
+
+##import pandas import pandas as pd ##import np
+import numpy as np
+
+
+pd.DataFrame([1, 2, 3, 4, 5])
+
+##create dataframe with new column name=Numbers 
+
+df1 = pd.DataFrame({'Numbers': [1, 2, 3, 4, 5]}) 
+
+df1
+
+
+
+##create dataframe with new column name=Numbers and set index as one, two etc
+pd.DataFrame({'Numbers': [1, 2, 3, 4, 5]}, index=['one', 'two', 'three',␣
+𝗌'four', 'five'])
+
+
+
+##create dataframe with new column name=Numbers and set index as one, two etc
+pd.DataFrame({'Numbers': [1, 2, 3, 4, 5]}, index=['one', 'two', 'three',␣
+𝗌'four', 'five'])
+
+data = {
+'Name':['Tom', 'Jack', 'Steve', 'Ricky'], 'Age':[28,34,29,42], 'Mobile':[1234,5678,9876,5432]
+}
+df4 = pd.DataFrame(data) df4
+
+## Display Names
+df4['Name']
+
+
+##Display Jack
+df4.loc[df4['Name'] == 'Jack', 'Name'].values[0]
+
+#display name and mobile
+df4[['Name', 'Mobile']]
+
+
+##create dataframe df5 with index=A,B,C,D and display dataframe
+data = {
+'Name':['Tom', 'Jack', 'Steve', 'Ricky','Greg'], 'Age':[28,34,29,42,54], 'Mobile':[1234,5678,9876,5432,5555]
+}
+df5 = pd.DataFrame(data, index=['A', 'B', 'C', 'D', 'E']) 
+df5
+
+
+
+## create columns m1 and m2 and enter marks in df5
+df5['m1'] = [55, 78, 90, 89, 78]
+df5['m2'] = [85, 89, 79, 80, 89]
+df5
+
+
+##add m1 and m2 and store the data in total column
+df5['Total'] = df5['m1'] + df5['m2'] df5
+
+
+#add another column remarks to df5
+df5['remarks'] = ['F', 'P', 'P', 'P', 'P']
+df5
+
+
+#remove column remarks
+df5.drop(columns=['remarks'])
+
+
+#remove column remarks and specify whether remarks is a rowname or a columnname␣
+𝗌i.e. use axis as 2nd argument
+df5.drop('remarks', axis=1)
+
+
+df5
+
+#remove column remarks and specify whether remarks is a rowname or a columnname␣
+𝗌i.e. use axis as 2nd argument
+df5.drop('remarks', axis=1)
+
+
+#drop row D permanently 
+
+df5.drop(index='D', inplace=True) 
+df5
+
+
+# determine if df5 is a 2-dimensional array
+df5.shape
+
+
+
+
+#### Missing data
+
+data={
+'Name':['Harry','Lucy','Gerome','Steve'],
+'Jan': ['P','P','A',np.nan],
+'Feb': ['P',np.nan,'A',np.nan],
+'Mar': ['A','P',np.nan,np.nan],
+'Apr': ['A','P','P','P'],
+'May': ['P','P','P','P']
+}
+df6=pd.DataFrame(data) df6
+
+#drop all rows that do not have values and display
+df6.dropna()
+
+#drop all columns that do not have values and display
+df6.dropna(axis=1)
+
+
+df6
+
+#fill NaN with Not Marked
+df6.fillna('Not Marked')
+
+
+
+#create a dataframe df7 and fill up marks in m1,m2 and m3 subjects
+marksdata=[
+['Jack', np.nan,78,90,'Mumbai'],
+['John', np.nan,np.nan,90,'Pune'],
+['Arnold', 76,50,90,'Mumbai'],
+['Steven', 90,78,np.nan,'Nashik'],
+['Juey',78,89,np.nan,'Pune']
+]
+df7 = pd.DataFrame(marksdata, columns=['Name', 'm1', 'm2', 'm3', 'City']) 
+df7
+
+#display NaN values as True and other values as False
+df7.isna()
+
+
+#replace NaN with 75
+df7.fillna(75)
+
+
+#replace each column's NaN with its column mean
+df7.fillna(df7.mean(numeric_only=True))
+
+
+# missing values can be replaced with the values using forward fill.
+df7.ffill(inplace=True)
+
+
+# missing values can be replaced with the values using backward fill.
+df7.bfill(inplace=True)
+
+
+
+
+#working with datasets #read a csv file
+empdf = pd.read_csv("C:/Users/Admin/employee.csv") empdf
+
+
+#shape : outputs tuple of (rows, columns)
+empdf.shape
+
+
+#info() : provides details about dataset
+empdf.info()
+
+
+#display first 5 rows of empdf
+empdf.head()
+
+
+#display first 50 rows of empdf
+empdf.head(50)
+
+
+#display last 5 rows of empdf
+empdf.tail()
+
+
+#display last 20 rows of empdf
+empdf.tail(20)
+
+
+#handling duplicates
+empdf.drop_duplicates()
+
+
+#print column names
+empdf.columns
+
+
+#count missing values
+empdf.isnull().sum()
+
+
+#rename 'Bonus %' to 'DiwaliBonus' 
+empdf.rename(columns={'Bonus %': 'DiwaliBonus'}, inplace=True) 
+print(empdf.columns)
+
+#replace missing salary with mean
+empdf['Salary'] = empdf['Salary'].fillna(empdf['Salary'].mean()) 
+print(empdf['Salary'].describe())
+
+
+
+#fill missing gender as Other
+empdf['Gender'] = empdf['Gender'].fillna('Other') 
+print(empdf['Gender'].unique())
+
+
+#group by gender
+empdf.groupby('Gender').mean(numeric_only=True)
+
+
+#group by team
+empdf.groupby('Team').mean(numeric_only=True)
+
+
+
+
+####################   Data Visualization using Matplotlib and
+Pandas Visualization
+
+
+
+import numpy as np 
+import numpy as np import pandas as pd
+import matplotlib.pyplot as plt
+
+
+
+# Data
+height = [0, 100, 200, 300, 400, 500]
+temperature = [30, 28, 25, 22, 20, 18]
+# Plot
+plt.plot(height, temperature) 
+plt.xlabel("Height (m)") 
+plt.ylabel("Temperature (°C)") 
+plt.title("Temperature vs Height") 
+plt.show()
+
+
+
+date = ["25/12", "26/12", "27/12"] temp = [8.5, 10.5, 6.8]
+plt.plot(date, temp) 
+plt.xlabel("Date") 
+plt.ylabel("Temperature (°C)") 
+plt.title("Date wise Temperature") 
+plt.grid(True)
+plt.show()
+
+
+
+height = [121.9, 124.5, 129.5, 134.6, 139.7, 147.3, 152.4, 157.5, 162.6]
+weight = [19.7, 21.3, 23.5, 25.9, 28.5, 32.1, 35.7, 39.6, 43.2]
+plt.plot(weight, height, marker='*', markersize=10, color='green', linewidth=2,␣
+𝗌linestyle='dashed')
+plt.xlabel("Weight (kg)") 
+plt.ylabel("Height (cm)") 
+plt.title("Average Weight vs Height") 
+plt.show()
+
+
+df = pd.read_csv("C:/Users/Admin/CulturalMelaSales.csv") 
+df.plot(kind='line', color=['red', 'blue', 'green'], linestyle="-.",␣
+𝗌linewidth=3,
+marker="*", markersize=12, subplots=True, figsize=(10,10)) 
+plt.show()
+
+
+df.plot(kind='line', color=['red', 'blue', 'green'], marker="*", markersize=10,␣
+𝗌linewidth=3, linestyle="--") 
+plt.xlabel("Days") 
+plt.ylabel("Sales in Rs")
+plt.title("Cultural Mela Sales Report") 
+plt.show()
+
+
+df.plot(kind='bar', x='Day', title='Cultural Mela Sales', grid=True) 
+plt.ylabel("Sales in Rs")
+plt.show()
+
+
+df.plot(kind='barh', x='Day', title='Cultural Mela Sales', grid=True,␣
+𝗌stacked=True)
+plt.ylabel("Sales in Rs") 
+plt.show()
+
+
+
+Question 8: Plot histogram for salary_data.csv.Plot 2 histograms each for ex- perience and salary.
+
+
+df = pd.read_csv("C:/Users/Admin/salary_data.csv") df['YearsExperience'].plot(kind='hist',  title="Histogram  of  Experience",␣
+𝗌bins=10, edgecolor='black')
+plt.xlabel("Years of Experience") 
+plt.show()
+df['Salary'].plot(kind='hist', title="Histogram of Salary", bins=10,␣
+𝗌edgecolor='black')
+plt.xlabel("Salary") 
+plt.show()
+
+
+Question 9: Plot scatter plot for salary_data.csv. where x= YearsEx- perience and y=Salary .Use the following customisations in plt.scatter : x,y,c=np.random.rand(30),cmap=‘viridis’,marker=‘D’,linewidth=6
+
+
+
+df = pd.read_csv("C:/Users/Admin/salary_data.csv") 
+x = df['YearsExperience']
+y = df['Salary']
+plt.scatter(x, y, c=np.random.rand(len(x)), cmap='viridis', marker='D',␣
+𝗌linewidth=6)
+plt.xlabel("Years of Experience") 
+plt.ylabel("Salary")
+plt.title("Scatter Plot of Experience vs Salary") 
+plt.show()
+
+
+
+Question 10: In order to assess the performance of students of a class in the annual examination, the class teacher stored marks of the
+ students in all the 5 subjects in a CSV “Marks.csv” file as shown in Table 4.8. Plot the data using boxplot and perform 
+ a comparative analysis of performance in each subject.
+
+
+
+
+df = pd.read_csv("C:/Users/Admin/Marks.csv")
+# a. Boxplot for all subjects
+df.plot(kind='box', title='Performance Analysis') 
+plt.ylabel("Marks")
+plt.show()
+# b. Boxplot for Maths
+df[['Maths']].plot(kind='box', title='Maths Performance') 
+plt.ylabel("Marks")
+plt.show()
+# c. Boxplot for Maths and English
+df[['Maths', 'English']].plot(kind='box', title='Maths and English Performance') 
+plt.ylabel("Marks")
+plt.show()
+# d. Boxplot for Maths, English, and Science
+df[['Maths', 'English', 'Science']].plot(kind='box', title='Maths, English, and␣
+𝗌Science Performance') plt.ylabel("Marks") 
+plt.show()
+# e. Boxplot for Maths and English grouped by Gender df.boxplot(column=['Maths', 'English'], by='Gender', grid=False) 
+plt.show()
+
+
+
+Question 11: Plot a pie chart and customize the charts using various proper- ties.
+
+
+df = pd.DataFrame({'Category': ['A', 'B', 'C', 'D'], 'Values': [20, 30, 25,␣
+𝗌25]})
+df.plot(kind='pie', y='Values', labels=df['Category'], autopct='%1.2f%%',␣
+𝗌figsize=(6,6))
+plt.title("Custom Pie Chart") 
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </pre>
+    <pre id="logReg">
+
+___
+# Logistic Regression with Python
+
+
+To predict a classification- survival or deceased.
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+
+
+
+## Loading the data
+
+Let's start by reading in the titanic_train.csv file into a pandas dataframe.
+train = pd.read_csv('titanic.csv')
+train.head()
+
+
+
+## Missing Data
+percent_missing =train.isnull().sum() * 100 / len(train)
+result= pd.DataFrame({'cols': train.columns,'percent_missing': percent_missing})
+result.sort_values('percent_missing',inplace=True)
+result
+No Missing Data
+x=train[train['Survived']==0]
+notsurvived =x.count()
+y=train[train['Survived']==1]
+survived =y.count()
+pdsurvived=pd.DataFrame({"Not Survived":notsurvived,"Survived":survived},index=["Not Survived", "Survived"])
+pdsurvived
+train.head()
+train.dropna(inplace=True)
+
+
+
+
+## Converting Categorical Features 
+
+We'll need to convert categorical features to dummy variables using pandas! Otherwise our machine learning algorithm won't be able to directly take in those features as inputs.
+train.info()
+train.drop(['Sex','Name','Ticket'],axis=1,inplace=True)
+train.head()
+Great! Our data is ready for our model!
+
+
+
+
+# Building a Logistic Regression model
+
+Let's start by splitting our data into a training set and test set (there is another test.csv file that you can play around with in case you want to use all this data for training).
+
+
+
+## Train Test Split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(train.drop('Survived',axis=1), 
+                                                    train['Survived'], test_size=0.30, 
+                                                    random_state=101)
+
+
+
+## Training and Predicting
+from sklearn.linear_model import LogisticRegression
+logmodel = LogisticRegression()
+logmodel.fit(X_train,y_train)
+predictions = logmodel.predict(X_test)
+predictions
+Let's move on to evaluate our model!
+
+
+## Evaluation
+from sklearn import metrics
+confusion_matrix = metrics.confusion_matrix(y_test, predictions)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [0, 1])
+
+cm_display.plot()
+plt.show()
+We can check precision,recall,f1-score using classification report!
+from sklearn.metrics import classification_report
+print(classification_report(y_test,predictions))
+
+    </pre>
+    <pre id="perceptron">
+import numpy as np
+
+
+class Perceptron:
+    def __init__(self, learning_rate=0.01, n_iterations=100):
+        self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
+        self.weights = None
+        self.bias = None
+
+    def fit(self, X, y):
+        n_samples, n_features = X.shape
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+
+        # Convert labels to 0 and 1
+        y_ = np.array([1 if i > 0 else 0 for i in y])
+
+        # Training loop
+        for _ in range(self.n_iterations):
+            for idx, x_i in enumerate(X):
+                linear_output = np.dot(x_i, self.weights) + self.bias
+                y_predicted = self.activation_function(linear_output)
+
+                # Perceptron update rule
+                update = self.learning_rate * (y_[idx] - y_predicted)
+                self.weights += update * x_i
+                self.bias += update
+
+    def activation_function(self, x):
+        return np.where(x >= 0, 1, 0)
+
+    def predict(self, X):
+        linear_output = np.dot(X, self.weights) + self.bias
+        y_predicted = self.activation_function(linear_output)
+        return y_predicted
+
+
+
+# OR gate inputs and expected outputs
+X = np.array([[0, 0],
+              [0, 1],
+              [1, 0],
+              [1, 1]])
+y = np.array([0, 1, 1, 1])
+
+# Initialize perceptron with learning rate and iterations
+perceptron = Perceptron(learning_rate=0.1, n_iterations=10)
+# Train the perceptron on OR gate data
+perceptron.fit(X, y)
+
+
+# Make predictions on the training data
+predictions = perceptron.predict(X)
+print("Predictions:", predictions)
+
+    </pre>
+    <pre id="perceptronGreDes">
+import numpy as np
+
+
+
+def compute_error_for_line_given_points(b, m, points):
+    """
+    Calculate mean squared error for a line defined by slope (m) and intercept (b).
+
+    Args:
+        b (float): y-intercept
+        m (float): slope
+        points (numpy.array): Array of [x, y] coordinates
+
+    Returns:
+        float: Mean squared error
+    """
+    totalError = 0
+    for i in range(len(points)):
+        x = points[i, 0]
+        y = points[i, 1]
+        totalError += (y - (m * x + b)) ** 2
+    return totalError / float(len(points))
+
+
+
+
+def step_gradient(b_current, m_current, points, learningRate):
+    """
+    Calculate one step of gradient descent.
+
+    Args:
+        b_current (float): Current y-intercept
+        m_current (float): Current slope
+        points (numpy.array): Array of [x, y] coordinates
+        learningRate (float): Step size for gradient descent
+
+    Returns:
+        tuple: Updated b and m values
+    """
+    b_gradient = 0
+    m_gradient = 0
+    N = float(len(points))
+
+    for i in range(len(points)):
+        x = points[i, 0]
+        y = points[i, 1]
+        b_gradient += -(2/N) * (y - ((m_current * x) + b_current))
+        m_gradient += -(2/N) * x * (y - ((m_current * x) + b_current))
+
+    new_b = b_current - (learningRate * b_gradient)
+    new_m = m_current - (learningRate * m_gradient)
+    return [new_b, new_m]
+
+
+
+def gradient_descent_runner(points, starting_b, starting_m, learning_rate, num_iterations):
+    """
+    Run the gradient descent algorithm.
+
+    Args:
+        points (numpy.array): Array of [x, y] coordinates
+        starting_b (float): Initial y-intercept
+        starting_m (float): Initial slope
+        learning_rate (float): Step size for gradient descent
+        num_iterations (int): Number of iterations to run
+
+    Returns:
+        tuple: Final b and m values
+    """
+    b = starting_b
+    m = starting_m
+
+    # Print initial error
+    print(f"Starting gradient descent at b = {b}, m = {m}, "
+          f"error = {compute_error_for_line_given_points(b, m, points)}")
+
+    for i in range(num_iterations):
+        b, m = step_gradient(b, m, points, learning_rate)
+
+    return [b, m]
+
+
+
+def run():
+    """
+    Main function to run linear regression using gradient descent.
+    """
+    try:
+        # Load data
+        points = np.genfromtxt("data.csv", delimiter=",")
+
+        # Hyperparameters
+        learning_rate = 0.0001
+        initial_b = 0  # Initial y-intercept guess
+        initial_m = 0  # Initial slope guess
+        num_iterations = 1000
+
+        print("Running...")
+        [b, m] = gradient_descent_runner(points, initial_b, initial_m, 
+                                         learning_rate, num_iterations)
+
+        print(f"After {num_iterations} iterations b = {b}, "
+              f"m = {m}, error = {compute_error_for_line_given_points(b, m, points)}")
+
+    except FileNotFoundError:
+        print("Error: Could not find data.csv file.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+
+
+if __name__ == '__main__':
+    run()
+
+    </pre>
+    <pre id="prolog8">
+% Start and goal states
+start(1/2/3/4/8/0/7/6/5).
+goal(1/2/3/4/5/6/7/8/0).
+
+% Move definitions
+move(1/2/3/4/8/0/7/6/5, down, 1/2/3/4/8/5/7/6/0, 1).
+move(1/2/3/4/8/5/7/6/0, left, 1/2/3/4/8/5/7/0/6, 1).
+move(1/2/3/4/8/5/7/0/6, up, 1/2/3/4/0/5/7/8/6, 1).
+move(1/2/3/4/0/5/7/8/6, right, 1/2/3/4/5/0/7/8/6, 1).
+move(1/2/3/4/5/0/7/8/6, down, 1/2/3/4/5/6/7/8/0, 1).
+
+% Perform sequence of moves and track cost
+solve :-
+    start(S0),
+    move(S0, M1, S1, C1),
+    write('Move: '), write(M1), write(' -> '), write(S1), write(', Cost: '), write(C1), nl,
+    move(S1, M2, S2, C2),
+    C12 is C1 + C2,
+    write('Move: '), write(M2), write(' -> '), write(S2), write(', Cost: '), write(C12), nl,
+    move(S2, M3, S3, C3),
+    C123 is C12 + C3,
+    write('Move: '), write(M3), write(' -> '), write(S3), write(', Cost: '), write(C123), nl,
+    move(S3, M4, S4, C4),
+    C1234 is C123 + C4,
+    write('Move: '), write(M4), write(' -> '), write(S4), write(', Cost: '), write(C1234), nl,
+    move(S4, M5, S5, C5),
+    TotalCost is C1234 + C5,
+    write('Move: '), write(M5), write(' -> '), write(S5), write(', Cost: '), write(TotalCost), nl,
+    goal(S5),
+    write('Goal reached! Total Cost = '), write(TotalCost), nl.
+
+    </pre>
+    <pre id="prologTic">
+display_board(Board) :-
+nl,
+display_row(Board,1),
+display_row(Board,2),
+display_row(Board,3),
+nl.
+display_row(Board,Row) :-
+write(''),display_cell(Board,Row,1),
+write(''),display_cell(Board,Row,2),
+write(''),display_cell(Board,Row,3),
+nl,
+(Row =< 3, write('--|--|--'),nl;true).
+display_cell(Board,Row,Col) :-
+member(cell(Row, Col,Player),Board),
+write(Player),
+!.
+display_cell(_,_,_):-
+ write('').
+win(Player,Board,Row,Col) :-
+    ( member(cell(Row,1,Player),Board),
+      member(cell(Row,2,Player),Board),
+      member(cell(Row,3,Player),Board);
+ 
+      member(cell(1,Col,Player),Board),
+      member(cell(2,Col,Player),Board),
+      member(cell(3,Col,Player),Board);
+ 
+      member(cell(1,1,Player),Board),
+      member(cell(2,2,Player),Board),
+      member(cell(3,3,Player),Board);
+ 
+      member(cell(1,3,Player),Board),
+      member(cell(2,2,Player),Board),
+      member(cell(3,1,Player),Board)
+    ).
+game_over(Board,Row,Col) :-
+    (
+        win('X',Board,Row,Col);
+        win('O',Board,Row,Col);
+        length(Board,9)
+     ).
+make_move(Player,Row,Col,Board,NewBoard) :-
+    \+ member(cell(Row,Col,_),Board),
+    append(Board,[cell(Row,Col,Player)],NewBoard).
+play :-
+   play('X',[]).
+ 
+play(Player,Board) :-
+    display_board(Board),
+    (game_over(Board,Row,Col)->(win('X',Board,Row,Col)->write('X wins!\n');
+       (win('O',Board,Row,Col)->write('O wins!\n');
+        write('Its a draw!\n')
+    )
+    );
+    (Player='X'->
+          write('Player Xs turn \n');
+          write('Player Os turn \n')
+ 
+    ),
+    write('Enter your move(row and column):'),
+    read(Row),read(Col),
+    (
+      (Row>=1,Row=<3,Col>=1,Col=<3)->
+          (
+            make_move(Player,Row,Col,Board,NewBoard)->
+            (
+               switch_player(Player,NextPlayer),
+               play(NextPlayer,NewBoard)
+            );
+            write('Invalid move.Try again \n'),
+            play(Player,Board)
+          );
+          write('Invalid input.Row and Column must be between 1 and 3.\n'),
+          play(Player,Board)
+      )
+    ).
+switch_player('X','O').
+switch_player('O','X').
+
+    </pre>
+    <pre id="prologWater">
+% Initial state
+start((0, 0)).
+
+% Goal state
+goal((2, 0)).
+
+% Move rules
+move((X, Y), (5, Y)) :- X < 5.     % Fill 5L jug
+move((X, Y), (X, 4)) :- Y < 4.     % Fill 4L jug
+move((X, Y), (0, Y)) :- X > 0.     % Empty 5L jug
+move((X, Y), (X, 0)) :- Y > 0.     % Empty 4L jug
+
+% Pour from 5L to 4L
+move((X, Y), (NX, NY)) :-
+    X > 0, Y < 4,
+    T is min(X, 4 - Y),
+    NX is X - T,
+    NY is Y + T.
+
+% Pour from 4L to 5L
+move((X, Y), (NX, NY)) :-
+    Y > 0, X < 5,
+    T is min(Y, 5 - X),
+    NY is Y - T,
+    NX is X + T.
+
+
+
+//////// HOW to run prolog 
+Create the .pl file
+Option A: Using any text editor
+Open a text editor (like Notepad, VS Code, or Notepad++).
+
+Paste the code (from the previous message).
+
+Save the file as:
+ wjug.pl
+(Make sure the extension is .pl, not .txt)
+
+Example:
+File name: wjug.pl
+Location: C:\Users\YourName\Documents\Prolog\
+
+
+
+
+ Step 3: Open SWI-Prolog
+Open SWI-Prolog (search "swipl" in the Start Menu).
+
+
+
+
+ Step 4: Load the file into SWI-Prolog
+In the SWI-Prolog console:
+
+?- [wjug].
+If the file is in another folder, give full path like:
+
+?- ['C:/Users/YourName/Documents/Prolog/wjug.pl'].
+If loaded successfully, you’ll see:
+
+true.
+
+
+
+Step 5: Write a predicate to find a solution
+Now, add this path-finding code in your .pl file after the move rules:
+
+   enter program 
+
+
+
+ Step 6: Run the solution
+Once the file is saved and loaded into Prolog, run:
+
+
+?- solve.
+This will print each move step-by-step until it reaches the goal (2, 0).
+
+
+ Tip:
+If you make changes to the .pl file, save it and then in Prolog console run:
+
+prolog
+Copy
+Edit
+?- [wjug].   % again, to reload it
+
+    </pre>
+    <pre id="randomForest">
+    <----------------------------------------RandomForest -------------------------------------------------->
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+%matplotlib inline
+from sklearn import preprocessing
+
+
+
+
+df = pd.read_csv("playgolf.csv")
+df.head(15)
+
+
+df.info()
+
+
+df.describe()
+
+
+
+categorical_col = []
+for column in df.columns:    
+        categorical_col.append(column)
+        print(f"{column} : {df[column].unique()}")
+        print("====================================")
+
+
+
+df.PlayGolf.value_counts()
+
+categorical_col.remove('PlayGolf')
+
+categorical_col
+
+
+
+from sklearn.preprocessing import LabelEncoder
+
+label = LabelEncoder()
+for column in categorical_col:
+    df[column] = label.fit_transform(df[column])
+
+
+
+df
+
+
+
+from sklearn.model_selection import train_test_split
+X = df.drop('PlayGolf', axis=1)
+y = df.PlayGolf
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+X
+
+y
+
+
+
+from sklearn.ensemble import RandomForestClassifier
+RandomForestmodel = RandomForestClassifier(n_estimators=10)
+RandomForestmodel.fit(X_train, y_train)
+
+
+from sklearn.ensemble import BaggingClassifier
+from sklearn.metrics import accuracy_score
+
+
+#Number of RandomForest models in the ensemble
+n_estimators = 10
+
+
+
+bagging_classifier = BaggingClassifier(base_estimator=RandomForestmodel, 
+                                        n_estimators=n_estimators)
+
+
+
+# Train the bagging classifier
+bagging_classifier.fit(X_train, y_train)
+# Make predictions on the test set
+y_pred = bagging_classifier.predict(X_test)
+
+
+from sklearn.metrics import classification_report
+print(f"CLASSIFICATION REPORT:\n")
+print(classification_report(y_test, y_pred))
+
+
+
+print(f"Accuracy Score: {accuracy_score(y_test, y_pred) * 100:.2f}%")
+print("_______________________________________________")
+
+
+
+
+<-------------------------------ensemble bagging voting method -------------------------------------------------->
+
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix,classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB, BernoulliNB
+from sklearn.linear_model import LogisticRegression
+
+
+def CreateDataFrame(N):
+    columns = ['a','b','c','y']
+    df = pd.DataFrame(columns=columns)
+    for i in range(N):
+        a = np.random.randint(10)
+        b = np.random.randint(20)
+        c = np.random.randint(5)  
+        y = "normal"
+        if((a+b+c)>25):
+            y="high"
+        elif((a+b+c)<12):
+            y= "low"
+        df.loc[i]= [a, b, c, y]
+    return df
+
+
+df = CreateDataFrame(200)
+df.head(200)
+
+
+X = df[["a","b","c"]]
+Y = df[["y"]]
+
+
+le=LabelEncoder()
+y=le.fit_transform(Y)
+
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+
+dtcmodel = DecisionTreeClassifier(criterion="entropy")
+dtcmodel.fit(X_train,y_train)
+ytest_pred=dtcmodel.predict(X_test)
+print(dtcmodel.score(X_test, y_test))
+print(confusion_matrix(y_test, ytest_pred)) 
+
+
+#Applying bagging
+
+lrmodel = LogisticRegression();
+bnbmodel = BernoulliNB()
+gnbmodel = GaussianNB()
+svcmodel = SVC()
+base_methods=[dtcmodel,lrmodel, bnbmodel, gnbmodel,svcmodel]
+#base_methods=[dtcmodel,lrmodel,svcmodel]
+for bm  in base_methods:
+    print(&apos;Method: &apos;, bm)
+    bag_model=BaggingClassifier(base_estimator=bm, n_estimators=100, bootstrap=True)
+    bag_model=bag_model.fit(X_train,y_train)
+    ytest_pred=bag_model.predict(X_test)
+    print(bag_model.score(X_test, y_test))
+    print(confusion_matrix(y_test, ytest_pred)) 
+
+
+
+
+
+# create the sub models
+#import Voting Classifier
+
+from sklearn.ensemble import VotingClassifier
+<!-- voting_clf = VotingClassifier(estimators=[(&apos;DecisionTree&apos;,dtcmodel),(&apos;Logistic&apos;,lrmodel),(&apos;Bernoulli&apos;,bnbmodel), 
+                                          (&apos;Gaussian&apos;,gnbmodel),(&apos;SVC&apos;, svcmodel)
+                                         ]) -->
+
+#fit and predict using training and testing dataset respectively
+voting_clf.fit(X_train, y_train)
+predictions = voting_clf.predict(X_test)
+#Evaluation matrics
+print(confusion_matrix(y_test,predictions))
+print(classification_report(y_test,predictions))
+    </pre>
+    <pre id="svm">
+# BANK CUSTOMERS RETIREMENT PREDICTIONS USING SUPPORT VECTOR MACHINES
+
+# STEP #1: PROBLEM STATEMENT
+
+
+You work as a data scientist at a major bank in NYC and you have been tasked to develop a model that can predict whether a customer is able to retire or not based on his/her features. Features are his/her age and net 401K savings (retirement savings in the U.S.). You though that Support Vector Machines can be a great candidate to solve the problem. 
+# STEP #2: IMPORTING DATA
+
+
+
+
+# import libraries 
+import pandas as pd # Import Pandas for data manipulation using dataframes
+import numpy as np # Import Numpy for data statistical analysis 
+import matplotlib.pyplot as plt # Import matplotlib for data visualisation
+import seaborn as sns # Statistical data visualization
+
+
+
+bank_df = pd.read_csv('Bank_Customer_retirement.csv')
+
+
+
+bank_df.shape
+
+bank_df.head()
+
+sns.pairplot(bank_df, hue = 'Retire', vars = ['Age', 'Savings'] )
+As the retirment age nears, the savings also increase.
+
+
+
+
+# STEP #4: MODEL TRAINING 
+bank_df = bank_df.drop(['Customer ID'],axis=1)
+
+
+
+# Let's drop the target label coloumns
+X = bank_df.drop(['Retire'],axis=1)
+X
+
+
+#Applying Standardization
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler() 
+X_data_scaled = scaler.fit_transform(X)
+X_data_scaled
+
+
+
+y = bank_df['Retire']
+y
+
+
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X_data_scaled, y, test_size = 0.20, random_state=101)
+
+
+X_train.shape
+
+
+X_test.shape
+
+
+y_train.shape
+
+
+y_test.shape
+
+
+
+
+#8.	Create a SVM model named “svmmodel” and kernel = “linear” with the training data.
+from sklearn.svm import SVC 
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import accuracy_score
+
+
+svmmodel1 = SVC(kernel='linear')
+svmmodel1.fit(X_train, y_train).
+
+
+
+
+#9.	Use the svmmodel to make predictions on X_test and store the prediction values in y_pred.
+y_pred = svmmodel1.predict(X_test)
+accuracy_score(y_test, y_pred)
+
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True)
+
+
+print(classification_report(y_test, y_pred))
+
+svmmodel2 = SVC(kernel="poly")
+svmmodel2.fit(X_train, y_train)
+
+
+y_pred = svmmodel2.predict(X_test)
+accuracy_score(y_test, y_pred)
+
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True)
+
+
+print(classification_report(y_test, y_pred))
+
+svmmodel3=SVC(kernel="rbf")
+svmmodel3.fit(X_train,y_train)
+
+
+y_pred = svmmodel3.predict(X_test)
+accuracy_score(y_test, y_pred)
+
+
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True)
+
+
+print(classification_report(y_test, y_pred))
+
+
+    </pre>
+
+</body>
+
+</html>
